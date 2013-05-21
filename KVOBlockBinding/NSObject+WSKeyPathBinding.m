@@ -29,14 +29,16 @@
 
 - (void)bindSourceKeyPath:(NSString *)sourcePath to:(id)target targetKeyPath:(NSString *)targetPath reverseMapping:(BOOL)reverseMapping
 {
+    __weak id weakTarget = target;
     [[self allKeyPathBindings] addObject:[self observe:self keyPath:sourcePath block:^(id observed, NSDictionary *change) {
-        [target setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:targetPath];
+        [weakTarget setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:targetPath];
     }]];
     
     if(reverseMapping)
     {
+        __weak id weakSelf = self;
         [[self allKeyPathBindings] addObject:[self observe:target keyPath:targetPath block:^(id observed, NSDictionary *change) {
-            [self setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:sourcePath];
+            [weakSelf setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:sourcePath];
         }]];
     }
 }
