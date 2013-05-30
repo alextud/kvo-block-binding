@@ -23,7 +23,14 @@
             targetKeyPath:(NSString *)targetPath
            reverseMapping:(BOOL)reverseMapping;
 
+- (void)bindSourceKeyPath:(NSString *)sourcePath
+                       to:(id)target
+            targetKeyPath:(NSString *)targetPath
+           reverseMapping:(BOOL)reverseMapping
+                    owner:(id)owner;
+
 - (void)unbindAllKeyPaths;
+- (void)unbindAllKeyPathsForOwner:(id)owner;
 
 - (void)unbindKeyPath:(NSString*)keyPath;
 @end

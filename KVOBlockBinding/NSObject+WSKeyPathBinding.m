@@ -29,17 +29,25 @@
 
 - (void)bindSourceKeyPath:(NSString *)sourcePath to:(id)target targetKeyPath:(NSString *)targetPath reverseMapping:(BOOL)reverseMapping
 {
+    [self bindSourceKeyPath:sourcePath to:target targetKeyPath:targetPath reverseMapping:reverseMapping owner:self];
+}
+
+- (void)bindSourceKeyPath:(NSString *)sourcePath to:(id)target targetKeyPath:(NSString *)targetPath reverseMapping:(BOOL)reverseMapping owner:(id)owner {
     __weak id weakTarget = target;
-    [[self allKeyPathBindings] addObject:[self observe:self keyPath:sourcePath block:^(id observed, NSDictionary *change) {
+    WSObservationBinding *binding = [self observe:self keyPath:sourcePath block:^(id observed, NSDictionary *change) {
         [weakTarget setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:targetPath];
-    }]];
+    }];
+    binding.owner = owner;
+    [[self allKeyPathBindings] addObject:binding];
     
     if(reverseMapping)
     {
         __weak id weakSelf = self;
-        [[self allKeyPathBindings] addObject:[self observe:target keyPath:targetPath block:^(id observed, NSDictionary *change) {
+        WSObservationBinding *binding = [self observe:target keyPath:targetPath block:^(id observed, NSDictionary *change) {
             [weakSelf setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:sourcePath];
-        }]];
+        }];
+        binding.owner = owner;
+        [[self allKeyPathBindings] addObject:binding];
     }
 }
 
@@ -67,4 +75,18 @@
     
     [[self allKeyPathBindings] removeAllObjects];
 }
+
+- (void)unbindAllKeyPathsForOwner:(id)owner
+{
+    for(WSObservationBinding *binding in [[self allKeyPathBindings] copy])
+    {
+        if (binding.owner == owner) {
+            [binding invalidate];
+            binding.block = nil;
+            [[self allKeyPathBindings] removeObject:binding];
+        }
+    }
+}
+
+
 @end
