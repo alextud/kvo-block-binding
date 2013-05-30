@@ -34,17 +34,24 @@
 
 - (void)bindSourceKeyPath:(NSString *)sourcePath to:(id)target targetKeyPath:(NSString *)targetPath reverseMapping:(BOOL)reverseMapping owner:(id)owner {
     __weak id weakTarget = target;
+    __weak id weakSelf = self;
     WSObservationBinding *binding = [self observe:self keyPath:sourcePath block:^(id observed, NSDictionary *change) {
-        [weakTarget setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:targetPath];
+        id changedValue = [change valueForKey:NSKeyValueChangeNewKey];
+        if (! changedValue) {
+            changedValue = [weakSelf valueForKeyPath:sourcePath]; //get value directly from object, binding was triggered by this category
+        }
+        [weakTarget setValue:changedValue forKeyPath:targetPath];
     }];
     binding.owner = owner;
     [[self allKeyPathBindings] addObject:binding];
     
     if(reverseMapping)
     {
-        __weak id weakSelf = self;
         WSObservationBinding *binding = [self observe:target keyPath:targetPath block:^(id observed, NSDictionary *change) {
-            [weakSelf setValue:[change valueForKey:NSKeyValueChangeNewKey] forKey:sourcePath];
+            id changedValue = [change valueForKey:NSKeyValueChangeNewKey];
+            if (changedValue) {
+                [weakSelf setValue:[change valueForKey:NSKeyValueChangeNewKey] forKeyPath:sourcePath];
+            }
         }];
         binding.owner = owner;
         [[self allKeyPathBindings] addObject:binding];
@@ -85,6 +92,15 @@
             [binding invalidate];
             binding.block = nil;
             [[self allKeyPathBindings] removeObject:binding];
+        }
+    }
+}
+
+- (void)triggerAllBindingForOwner:(id)owner {
+    for(WSObservationBinding *binding in [[self allKeyPathBindings] copy])
+    {
+        if (binding.owner == owner) {
+            [binding invoke];
         }
     }
 }
