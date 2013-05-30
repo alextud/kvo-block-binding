@@ -16,12 +16,9 @@
  * @param sourcePath The keypath of the property to observe on the source using KVO
  * @param target The target object to observe
  * @param targetPath The keypath of the property to observe on the target using KVO
+ * @param owner can be used to identify which binding should be removed
  * @return An array containing the binding and it's reverse, if specified. This does NOT need to be retained
  */
-- (void)bindSourceKeyPath:(NSString *)sourcePath 
-                       to:(id)target
-            targetKeyPath:(NSString *)targetPath
-           reverseMapping:(BOOL)reverseMapping;
 
 - (void)bindSourceKeyPath:(NSString *)sourcePath
                        to:(id)target
@@ -29,7 +26,6 @@
            reverseMapping:(BOOL)reverseMapping
                     owner:(id)owner;
 
-- (void)unbindAllKeyPaths;
 - (void)unbindAllKeyPathsForOwner:(id)owner;
 
 - (void)unbindKeyPath:(NSString*)keyPath;
