@@ -52,4 +52,6 @@
  */
 - (void)removeAllBlockBasedObserversForOwner:(id)owner;
 
+- (void)triggerAllBlockBasedObserversForOwner:(id)owner;
+
 @end

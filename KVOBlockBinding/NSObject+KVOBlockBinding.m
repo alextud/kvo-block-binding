@@ -72,4 +72,12 @@
                                  block:block];
 }
 
+- (void)triggerAllBlockBasedObserversForOwner:(id)owner {
+    for(WSObservationBinding *binding in [[self allBlockBasedObservers] copy]) {
+        if(binding.owner == owner) {
+            [binding invoke];
+        }
+    }
+}
+
 @end
