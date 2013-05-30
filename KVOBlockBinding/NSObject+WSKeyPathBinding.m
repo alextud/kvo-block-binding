@@ -51,12 +51,13 @@
     }
 }
 
-- (void)unbindKeyPath:(NSString *)keyPath
+- (void)unbindKeyPath:(NSString*)keyPath forOwner:(id)owner;
 {
     NSArray *bindings = [self allKeyPathBindings];
     for(WSObservationBinding *binding in bindings)
     {
-        if([binding.keyPath isEqualToString:keyPath])
+        BOOL shouldInvalidate = binding.owner == owner && [binding.keyPath isEqualToString:keyPath];
+        if(shouldInvalidate)
         {
             [binding invalidate];
             binding.block = nil;

@@ -28,5 +28,5 @@
 
 - (void)unbindAllKeyPathsForOwner:(id)owner;
 
-- (void)unbindKeyPath:(NSString*)keyPath;
+- (void)unbindKeyPath:(NSString*)keyPath forOwner:(id)owner;
 @end
