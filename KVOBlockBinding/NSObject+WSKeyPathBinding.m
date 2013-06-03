@@ -60,7 +60,7 @@
 
 - (void)unbindKeyPath:(NSString*)keyPath forOwner:(id)owner;
 {
-    NSArray *bindings = [self allKeyPathBindings];
+    NSArray *bindings = [[self allKeyPathBindings] copy];
     for(WSObservationBinding *binding in bindings)
     {
         BOOL shouldInvalidate = binding.owner == owner && [binding.keyPath isEqualToString:keyPath];
