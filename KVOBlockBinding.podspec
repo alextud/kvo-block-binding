@@ -8,5 +8,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => 'https://github.com/alextud/kvo-block-binding.git' }
   s.source_files = 'KVOBlockBinding/*.{h,m}'
   s.requires_arc = true
-  s.license      = { :type => 'MIT', :file => 'MIT-LICENSE.MD' }
+  s.license      = { :type => 'MIT', :file => 'LICENSE.md' }
 end
