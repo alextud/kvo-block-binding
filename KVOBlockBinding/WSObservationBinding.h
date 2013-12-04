@@ -12,10 +12,10 @@ typedef void (^WSObservationBlock)(id observed, NSDictionary *change);
 
 @interface WSObservationBinding : NSObject
 @property (nonatomic, assign) BOOL valid;
-@property (nonatomic, weak) id owner;
+@property (nonatomic, assign) id owner;
 @property (nonatomic, strong) NSString *keyPath;
 @property (nonatomic, copy) WSObservationBlock block;
-@property (nonatomic, weak) id observed;
+@property (nonatomic, assign) id observed;
 
 /**
  * If a reference to the binding is kept by the caller to addObserver... then it can use this method to selectively just 
